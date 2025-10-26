@@ -1,6 +1,6 @@
 const express = require('express');
 const { paymentMiddleware } = require('x402-express');
-const { facilitator } = require('@coinbase/x402');  // 使用預設 facilitator
+const { facilitator } = require('@coinbase/x402');
 
 const app = express();
 const port = process.env.PORT || 3000;
