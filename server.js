@@ -1,16 +1,21 @@
 const express = require('express');
-const { createX402Middleware } = require('@coinbase/x402');
+const { paymentMiddleware } = require('x402-express');
+const { facilitator } = require('@coinbase/x402');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // 配置 x402 中介軟體
-app.use(createX402Middleware({
-  walletAddress: '0x6540d24c334a22813ebe849e1034ed53c7c951e9',
-  network: 'base',
-  currency: 'USDC',
-  amount: '1' // 調整為 1 USDC
-}));
+app.use(paymentMiddleware(
+  '0x6540d24c334a22813ebe849e1034ed53c7c951e9',  // 你的 Base 錢包地址
+  {
+    '/premium-content': {  // 保護的端點
+      price: '1',  // 1 USDC
+      network: 'base'  // Base 主網
+    }
+  },
+  facilitator  // 使用 Coinbase facilitator
+));
 
 // 付費資源端點
 app.get('/premium-content', (req, res) => {
