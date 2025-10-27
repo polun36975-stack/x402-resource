@@ -1,21 +1,18 @@
 const express = require('express');
-const { paymentMiddleware } = require('x402-express');
-const { facilitator } = require('@coinbase/x402');
+const { createFacilitatorConfig, x402 } = require('@coinbase/x402');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // 配置 x402 中介軟體
-app.use(paymentMiddleware(
-  '0x6540d24c334a22813ebe849e1034ed53c7c951e9',  // 你的 Base 錢包地址
-  {
-    '/premium-content': {  // 保護的端點
-      price: '0.10',       // 0.10 USDC
-      network: 'base'      // Base 主網
-    }
-  },
-  facilitator  // 使用 Coinbase facilitator
-));
+app.use(x402({
+  config: createFacilitatorConfig({
+    walletAddress: '0x6540d24c334a22813ebe849e1034ed53c7c951e9',
+    network: 'base',
+    currency: 'USDC',
+    amount: '2'
+  })
+}));
 
 // 付費資源端點
 app.get('/premium-content', (req, res) => {
